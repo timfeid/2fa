@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '../app.scss';
-	import NavLink from '../lib/components/ui/nav-link.svelte';
 	import { accessToken } from '../lib/stores/access-token';
 	export let data;
 
@@ -17,18 +16,4 @@
 	/>
 </svelte:head>
 
-<div class="sticky top-0 w-full border-b flex h-12 items-center text-sm">
-	<div class="container">
-		<ul class="flex space-x-6">
-			<li>
-				<NavLink href="/">Home</NavLink>
-			</li>
-			<li>
-				<NavLink href="/accounts">Accounts</NavLink>
-			</li>
-		</ul>
-	</div>
-</div>
-<div class="w-full max-w-md mx-auto md:max-w-2xl pt-6">
-	<slot />
-</div>
+<slot />

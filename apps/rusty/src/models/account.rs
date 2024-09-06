@@ -53,6 +53,8 @@ pub struct AccountDetailsWithCode {
     pub issuer: String,
     pub username: String,
     pub code: String,
+    pub next_step: String,
+    pub step: String,
 }
 
 #[derive(Debug, Serialize, Type)]
@@ -103,15 +105,17 @@ impl Account {
     }
 
     pub async fn into_response_with_code(&self) -> AppResult<AccountDetailsWithCode> {
-        let code = self
-            .get_current_code()
-            .and_then(|c| Ok(c.generate_current().unwrap_or_default()))?;
+        let totp = self.get_current_code()?;
+        let next_step = totp.next_step_current().unwrap_or_default().to_string();
+        let code = totp.generate_current().unwrap_or_default();
 
         Ok(AccountDetailsWithCode {
             id: self.id.clone(),
             issuer: self.issuer.clone(),
             username: self.username.clone(),
             code,
+            next_step,
+            step: self.step.clone().to_string(),
         })
     }
 }

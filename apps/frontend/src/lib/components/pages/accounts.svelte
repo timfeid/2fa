@@ -10,7 +10,9 @@
 	let query = '';
 	let selectedItem: AccountDetails | undefined = undefined;
 
-	$: filteredItems = query ? fuse.search(query).map((i) => i.item) : items;
+	$: filteredItems = query
+		? fuse.search(query).map((i) => i.item)
+		: [...items].sort((a, b) => (a.issuer > b.issuer ? 1 : -1));
 
 	function openFirst() {
 		if (filteredItems.length === 0) {
@@ -35,11 +37,11 @@
 		<button type="submit" class="hidden" />
 	</form>
 	<!-- <Separator class="h-[3px]" /> -->
-	<div class="shadow-md overflow-hidden grid grid-cols-2 gap-2">
+	<div class="shadow-md overflow-hidden grid grid-cols-1 gap-2">
 		{#each filteredItems as item}
 			<button on:click={() => openItem(item)}>
 				<Card
-					class="dark:bg-gray-900/50 dark:hover:bg-gray-900 dark:hover:text-white text-gray-300"
+					class="dark:bg-stone-900/10 dark:hover:bg-stone-900/25 dark:hover:text-white text-gray-300"
 				>
 					<CardHeader class="space-y-1 text-sm">
 						<div>{item.issuer}</div>

@@ -6,8 +6,7 @@
 	type $$Props = Props & { loading?: boolean };
 	type $$Events = Events;
 
-	let className: $$Props['class'] =
-		'dark:bg-gray-900/50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-100';
+	let className: $$Props['class'] = '';
 	export let variant: $$Props['variant'] = 'default';
 	export let size: $$Props['size'] = 'default';
 	export let builders: $$Props['builders'] = [];

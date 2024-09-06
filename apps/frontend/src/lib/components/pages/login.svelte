@@ -36,6 +36,7 @@
 			}
 		} catch (e) {}
 		loading = false;
+		window.location.href = '/';
 	}
 </script>
 
@@ -57,6 +58,7 @@
 						Username
 					</label>
 					<Input
+						focus
 						bind:value={args.username}
 						id="username"
 						placeholder="Enter your username"

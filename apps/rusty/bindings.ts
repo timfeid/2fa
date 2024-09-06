@@ -11,9 +11,9 @@ export type Procedures = {
     subscriptions: never
 };
 
-export type AccountDetailsWithCode = { id: string; issuer: string; username: string; code: string }
-
 export type AccountDetails = { id: string; issuer: string; username: string }
+
+export type AccountDetailsWithCode = { id: string; issuer: string; username: string; code: string; next_step: string; step: string }
 
 export type LoginArgs = { username: string; password: string }
 

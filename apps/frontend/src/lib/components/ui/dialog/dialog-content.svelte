@@ -3,10 +3,12 @@
 	import Cross2 from 'lucide-svelte/icons/x';
 	import * as Dialog from './index.js';
 	import { cn, flyAndScale } from '$lib/utils.js';
+	import { Button } from '../button/index.js';
 
-	type $$Props = DialogPrimitive.ContentProps;
+	type $$Props = DialogPrimitive.ContentProps & { open: boolean };
 
 	let className: $$Props['class'] = undefined;
+	export let open: $$Props['open'] = true;
 	export let transition: $$Props['transition'] = flyAndScale;
 	export let transitionConfig: $$Props['transitionConfig'] = {
 		duration: 200
@@ -26,11 +28,16 @@
 		{...$$restProps}
 	>
 		<slot />
-		<DialogPrimitive.Close
-			class="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute right-4 top-5 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none"
+
+		<Button
+			on:click={() => (open = false)}
+			variant="ghost"
+			size="icon"
+			class="absolute top-5 right-4"
 		>
 			<Cross2 class="h-4 w-4" />
-			<span class="sr-only">Close</span>
-		</DialogPrimitive.Close>
+		</Button>
+		<span class="sr-only">Close</span>
+		<!-- </DialogPrimitive.Close> -->
 	</DialogPrimitive.Content>
 </Dialog.Portal>
