@@ -68,7 +68,7 @@ impl Ctx {
         if self.user.is_none() {
             return Err(AppError::Unauthorized);
         }
-
+        // Err(AppError::Unauthorized)
         Ok(self.user.as_ref().unwrap())
     }
 }

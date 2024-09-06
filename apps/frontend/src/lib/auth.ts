@@ -12,3 +12,8 @@ export function setAuthCookies(cookies: Cookies, response: AuthResponse) {
 		path: '/'
 	});
 }
+
+export async function refreshAccessToken() {
+	const response = await fetch('/refresh-token', { method: 'post' });
+	return await response.text();
+}

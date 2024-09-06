@@ -1,4 +1,7 @@
-export function load({ params }) {
+import { client } from '$lib/client';
+
+export async function load({ params }) {
 	const id = params.slug;
-	return { id };
+	const item = await client.query(['account.find', id]);
+	return { item };
 }

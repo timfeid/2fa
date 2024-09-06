@@ -4,15 +4,28 @@ import type { Procedures } from '@2fa/rusty';
 // import { get } from 'svelte/store';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { browser } from '$app/environment';
+import { get } from 'svelte/store';
+import { accessToken } from './stores/access-token';
+import { refreshAccessToken } from './auth';
+import { decodeJwt } from 'jose';
+import { isPast } from 'date-fns/isPast';
 
-const transport = new FetchTransport(PUBLIC_API_URL, (input, init) =>
-	fetch(input, {
+const transport = new FetchTransport(PUBLIC_API_URL, async (input, init) => {
+	const at = get(accessToken);
+	if (at) {
+		const payload = decodeJwt(at);
+		if (browser && isPast(new Date(payload.exp! * 1000))) {
+			await refreshAccessToken();
+		}
+	}
+
+	return fetch(input, {
 		...init,
 		headers: {
-			authorization: browser ? localStorage.getItem('access_token') || '' : ''
+			authorization: get(accessToken) || ''
 		}
-	})
-);
+	});
+});
 
 export const websocketClient = createClient<Procedures>({
 	transport: browser

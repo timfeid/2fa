@@ -1,26 +1,51 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { client } from '../../client';
 	import type { AccountDetails } from '@2fa/rusty';
+	import Fuse from 'fuse.js';
+	import { Card, CardHeader } from '../ui/card';
+	import SearchInput from '../ui/search-input/search-input.svelte';
+	import AccountDialog from '../accounts/account-dialog.svelte';
 
-	let items: AccountDetails[] = [];
-	onMount(async () => {
-		items = await client.query(['account.list', { search: null }]);
-	});
+	export let items: AccountDetails[];
+	const fuse = new Fuse(items, { keys: ['issuer', 'username'] });
+	let query = '';
+	let selectedItem: AccountDetails | undefined = undefined;
+
+	$: filteredItems = query ? fuse.search(query).map((i) => i.item) : items;
+
+	function openFirst() {
+		if (filteredItems.length === 0) {
+			return;
+		}
+
+		openItem(filteredItems[0]);
+	}
+
+	function openItem(item: AccountDetails) {
+		selectedItem = item;
+	}
 </script>
 
-<div class="w-full max-w-md mx-auto bg-white shadow-md overflow-hidden md:max-w-2xl">
-	<ul class="divide-y divide-gray-200">
-		{#each items as item}
-			<li class="p-4 flex space-x-4 justify-center">
-				<a href="/accounts/{item.id}" class="flex-1 min-w-0 flex items-center">
-					<p class="text-sm font-medium text-gray-900 truncate">
-						{item.id}
-						{item.issuer}
-						{item.username}
-					</p>
-				</a>
-			</li>
+{#if selectedItem}
+	<AccountDialog bind:account={selectedItem} />
+{/if}
+
+<div class="space-y-4">
+	<form on:submit|preventDefault={openFirst}>
+		<SearchInput bind:value={query}></SearchInput>
+		<button type="submit" class="hidden" />
+	</form>
+	<!-- <Separator class="h-[3px]" /> -->
+	<div class="shadow-md overflow-hidden grid grid-cols-2 gap-2">
+		{#each filteredItems as item}
+			<button on:click={() => openItem(item)}>
+				<Card
+					class="dark:bg-gray-900/50 dark:hover:bg-gray-900 dark:hover:text-white text-gray-300"
+				>
+					<CardHeader class="space-y-1 text-sm">
+						<div>{item.issuer}</div>
+					</CardHeader>
+				</Card>
+			</button>
 		{/each}
-	</ul>
+	</div>
 </div>

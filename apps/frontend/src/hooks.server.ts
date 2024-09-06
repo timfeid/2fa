@@ -19,7 +19,7 @@ const publicKey = await importSPKI(
 );
 
 const refreshUser: Handle = async ({ event, resolve }) => {
-	let refreshToken = event.cookies.get('refresh_token');
+	const refreshToken = event.cookies.get('refresh_token');
 	let accessToken = event.cookies.get('access_token');
 	let data: JWTPayload | undefined;
 
@@ -37,10 +37,9 @@ const refreshUser: Handle = async ({ event, resolve }) => {
 				const response = await refreshAccessToken(refreshToken);
 				setAuthCookies(event.cookies, response);
 				accessToken = response.access_token || undefined;
-				refreshToken = response.refresh_token || undefined;
 			}
 		} catch (e) {
-			console.log('oh no', e);
+			console.log('refresh failed', e);
 		}
 
 		event.locals.accessToken = accessToken;

@@ -10,7 +10,7 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
-	class={cn('bg-card text-card-foreground rounded-xl border', className)}
+	class={cn('bg-card text-card-foreground rounded border', className)}
 	{...$$restProps}
 	on:click
 	on:focusin

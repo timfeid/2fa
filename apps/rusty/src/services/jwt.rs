@@ -34,10 +34,14 @@ impl JwtService {
     }
 
     pub fn create_for_user(user: &User, jti: Option<String>) -> AppResult<String> {
+        let is_access_token = &jti.is_none();
         let claims = Claims {
             jti,
             sub: user.get_id().to_string(),
-            exp: get_current_timestamp().add(604800),
+            exp: get_current_timestamp().add(match is_access_token {
+                &true => 3600,
+                &false => 604800,
+            }),
         };
 
         let response = encode(
@@ -49,31 +53,4 @@ impl JwtService {
 
         Ok(response.map_err(|e| AppError::InteralServerError(e.to_string()))?)
     }
-
-    // pub fn get_claims_from_cookies(cookies: Cookies) -> Option<TokenData<Claims>> {
-    //     if let Some(cookie) = cookies.get("tits") {
-    //         return JwtService::decode(cookie.value()).ok();
-    //     }
-
-    //     None
-    // }
-
-    // pub fn require_user_id_from_cookies(cookies: Cookies) -> Result<String, Error> {
-    //     if let Some(token_data) = JwtService::get_claims_from_cookies(cookies) {
-    //         return Ok(token_data.claims.sub);
-    //     }
-
-    //     Err(Error::new(
-    //         rspc::ErrorCode::Unauthorized,
-    //         "Log in first".to_owned(),
-    //     ))
-    // }
-
-    // pub fn get_user_id_from_cookies(cookies: Cookies) -> Option<String> {
-    //     if let Some(token_data) = JwtService::get_claims_from_cookies(cookies) {
-    //         return Some(token_data.claims.sub);
-    //     }
-
-    //     None
-    // }
 }

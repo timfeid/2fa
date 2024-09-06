@@ -46,14 +46,17 @@ __metadata:
     eslint: "npm:^9.9.1"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-svelte: "npm:^2.43.0"
+    fuse.js: "npm:^7.0.0"
     globals: "npm:^15.9.0"
     jose: "npm:^5.8.0"
+    lucide-svelte: "npm:^0.439.0"
     postcss: "npm:^8.4.45"
     prettier: "npm:^3.3.3"
     prettier-plugin-svelte: "npm:^3.2.6"
     sass-embedded: "npm:^1.78.0"
     svelte: "npm:^4.2.19"
     svelte-check: "npm:^3.8.6"
+    svelte-radix: "npm:^1.1.1"
     tailwind-merge: "npm:^2.5.2"
     tailwind-variants: "npm:^0.2.1"
     tailwindcss: "npm:^3.4.10"
@@ -2037,6 +2040,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fuse.js@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "fuse.js@npm:7.0.0"
+  checksum: 10c0/3574b7fc2e0ccb047e05dbe5f8f04e8f0754f62fa209669ef426ea1354a32ae7355620788af8f1d29f94e1fdecd513f1f3787f012848a31ec90bb4e0e6092504
+  languageName: node
+  linkType: hard
+
 "glob-parent@npm:^5.1.2, glob-parent@npm:~5.1.2":
   version: 5.1.2
   resolution: "glob-parent@npm:5.1.2"
@@ -2485,6 +2495,15 @@ __metadata:
   version: 10.4.3
   resolution: "lru-cache@npm:10.4.3"
   checksum: 10c0/ebd04fbca961e6c1d6c0af3799adcc966a1babe798f685bb84e6599266599cd95d94630b10262f5424539bc4640107e8a33aa28585374abf561d30d16f4b39fb
+  languageName: node
+  linkType: hard
+
+"lucide-svelte@npm:^0.439.0":
+  version: 0.439.0
+  resolution: "lucide-svelte@npm:0.439.0"
+  peerDependencies:
+    svelte: ^3 || ^4 || ^5.0.0-next.42
+  checksum: 10c0/8dcc132ddcd90e4fd7ecd13d7dbe2cfccb6185c2262a05a01eb07f71d4bfb451d9ec68057f6196a5cf5a64e1095db75a5fccd3acdba3007a3a32aaf150efbe9d
   languageName: node
   linkType: hard
 
@@ -3861,6 +3880,15 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/fe968ee1d599a2c59c5a695e23cd3c2d15c5c316ce76ae644908521476f2e81b69dcf0cd3492deeb0a06140af497f994e4baf524d3d2c93986fad1c9267524ae
+  languageName: node
+  linkType: hard
+
+"svelte-radix@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "svelte-radix@npm:1.1.1"
+  peerDependencies:
+    svelte: ^3.54.0 || ^4.0.0 || ^5.0.0 || ^5.0.0-next.1
+  checksum: 10c0/332e49ef1a629442afa37f0cadf9abbd9100483a707a999955ba9cb83706ff78dfa85b836b8403a290df0cb340f073bd946b423ac30a26972c8b524917911509
   languageName: node
   linkType: hard
 

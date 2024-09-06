@@ -39,8 +39,8 @@
 	}
 </script>
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50">
-	<Card class="w-full max-w-md">
+<div class="pt-[25vh] mx-auto w-full max-w-md">
+	<Card>
 		<form on:submit|preventDefault={login}>
 			<CardHeader class="space-y-1">
 				<CardTitle class="text-2xl font-bold text-center">Login</CardTitle>
