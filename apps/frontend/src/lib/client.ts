@@ -8,12 +8,12 @@ import { browser } from '$app/environment';
 const transport = new FetchTransport(PUBLIC_API_URL, (input, init) =>
 	fetch(input, {
 		...init,
-		credentials: 'include',
 		headers: {
-			// Cookie: get(at),
+			authorization: browser ? localStorage.getItem('access_token') || '' : ''
 		}
 	})
 );
+
 export const websocketClient = createClient<Procedures>({
 	transport: browser
 		? new WebsocketTransport(PUBLIC_API_URL.replace('http', 'ws') + '/ws')

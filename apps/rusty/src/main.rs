@@ -1,12 +1,18 @@
 use std::{fs::write, future::IntoFuture, path::PathBuf, sync::Arc};
 
 use axum::{
-    http::{header::CONTENT_TYPE, Method},
+    http::{
+        header::{AUTHORIZATION, CONTENT_TYPE},
+        request::Parts,
+        Method,
+    },
     routing::get,
 };
 use database::create_connection;
+use error::{AppError, AppResult};
 use http::routers::create_router;
 use models::account::Account;
+use services::jwt::{Claims, JwtService};
 use sqlx::{Executor, Pool, Postgres};
 use totp_rs::{Algorithm, Secret, TOTP};
 
@@ -15,12 +21,15 @@ use tower_http::cors::{AllowOrigin, CorsLayer};
 
 fn create_app(pool: Arc<Pool<Postgres>>) -> axum::Router {
     let router = create_router();
-    let allowed_headers = [CONTENT_TYPE];
+    let allowed_headers = [CONTENT_TYPE, AUTHORIZATION];
     let allowed_methods = [Method::GET, Method::POST, Method::OPTIONS];
 
     axum::Router::new()
         .route("/", get(|| async { "Hello 'rspc'!" }))
-        .nest("/rspc", rspc_axum::endpoint(router, || Ctx::new(pool)))
+        .nest(
+            "/rspc",
+            rspc_axum::endpoint(router, |parts: Parts| Ctx::new(pool, parts)),
+        )
         .layer(
             CorsLayer::new()
                 .allow_methods(allowed_methods)
@@ -28,21 +37,39 @@ fn create_app(pool: Arc<Pool<Postgres>>) -> axum::Router {
                 .allow_origin(AllowOrigin::mirror_request())
                 .allow_credentials(true),
         )
-    // .layer(cors)
 }
 
 mod database;
 mod error;
 mod http;
 mod models;
+mod services;
 
+#[derive(Debug)]
 pub struct Ctx {
     pub pool: Arc<Pool<Postgres>>,
+    user: Option<Claims>,
 }
 
 impl Ctx {
-    pub fn new(pool: Arc<Pool<Postgres>>) -> Ctx {
-        Ctx { pool }
+    pub fn new(pool: Arc<Pool<Postgres>>, parts: Parts) -> Ctx {
+        let user = match parts.headers.get("Authorization") {
+            Some(bearer) => JwtService::decode(bearer.to_str().unwrap_or_default())
+                .and_then(|r| Ok(r.claims))
+                .ok(),
+            None => None,
+        };
+
+        Ctx { pool, user }
+    }
+
+    pub fn required_user(self: &Ctx) -> AppResult<&Claims> {
+        println!("{:?}", self);
+        if self.user.is_none() {
+            return Err(AppError::Unauthorized);
+        }
+
+        Ok(self.user.as_ref().unwrap())
     }
 }
 

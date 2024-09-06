@@ -14,9 +14,26 @@ datasource db {
 }
 
 model User {
-  id String @id
+  id       String @id
+  password String
+
+  accounts      Account[]
+  refreshTokens RefreshToken[]
 
   @@map("users")
+}
+
+model RefreshToken {
+  token  String @id
+  userId String @map("user_id")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("refresh_tokens")
 }
 
 enum HashingAlgorithm {
@@ -27,6 +44,7 @@ enum HashingAlgorithm {
 
 model Account {
   id        String           @id
+  userId    String           @map("user_id")
   digits    Int              @db.SmallInt
   skew      Int              @db.SmallInt
   step      BigInt
@@ -34,6 +52,8 @@ model Account {
   issuer    String
   username  String
   algorithm HashingAlgorithm
+
+  user User @relation(fields: [userId], references: [id])
 
   @@map("accounts")
 }

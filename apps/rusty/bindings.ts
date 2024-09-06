@@ -2,8 +2,21 @@
 
 export type Procedures = {
     queries: 
-        { key: "account.test", input: never, result: string } | 
+        { key: "account.find", input: string, result: AccountDetailsWithCode } | 
+        { key: "account.list", input: ListArgs, result: AccountDetails[] } | 
         { key: "version", input: never, result: string },
-    mutations: never,
+    mutations: 
+        { key: "authentication.login", input: LoginArgs, result: AuthResponse } | 
+        { key: "authentication.refresh_token", input: string, result: AuthResponse },
     subscriptions: never
 };
+
+export type AccountDetailsWithCode = { id: string; issuer: string; username: string; code: string }
+
+export type AccountDetails = { id: string; issuer: string; username: string }
+
+export type LoginArgs = { username: string; password: string }
+
+export type AuthResponse = { access_token: string | null; refresh_token: string | null; success: boolean }
+
+export type ListArgs<> = null
