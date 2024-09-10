@@ -5,7 +5,7 @@
 	import SearchInput from '../ui/search-input/search-input.svelte';
 	import AccountDialog from '../accounts/account-dialog.svelte';
 
-	export let items: AccountDetails[];
+	let items: AccountDetails[] = [];
 	const fuse = new Fuse(items, { keys: ['issuer', 'username'] });
 	let query = '';
 	let selectedItem: AccountDetails | undefined = undefined;

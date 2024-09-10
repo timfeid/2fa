@@ -1,9 +1,21 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import '../app.scss';
+	import { getAccessToken } from '../lib/auth';
 	import { accessToken } from '../lib/stores/access-token';
+	import { goto } from '$app/navigation';
 	export let data;
 
-	accessToken.set(data.accessToken);
+	onMount(async () => {
+		const at = await getAccessToken();
+		accessToken.set(at || undefined);
+
+		if (!at) {
+			return goto('/login');
+		}
+
+		return goto('/accounts');
+	});
 </script>
 
 <svelte:head>

@@ -11,16 +11,8 @@
 	} from '$lib/components/ui/card';
 	import { client } from '../../client';
 	import type { AuthResponse } from '@2fa/rusty';
-
-	async function saveLoginDetails(details: AuthResponse) {
-		await fetch(`/save-login`, {
-			method: 'post',
-			body: JSON.stringify(details),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
-	}
+	import { forTauri } from '../../tauri';
+	import { saveLoginDetails } from '../../auth';
 
 	let loading = false;
 	const args = {
@@ -28,15 +20,18 @@
 		password: ''
 	};
 	async function login() {
+		console.log('ehllo??');
 		loading = true;
 		try {
 			const response = await client.mutation(['authentication.login', args]);
 			if (response.success && response.access_token && response.refresh_token) {
 				await saveLoginDetails(response);
 			}
-		} catch (e) {}
+		} catch (e) {
+			console.log(e);
+		}
 		loading = false;
-		window.location.href = '/';
+		// window.location.href = '/';
 	}
 </script>
 

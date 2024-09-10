@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
-	import Hamburger from 'lucide-svelte/icons/list';
+	import Hamburger from 'lucide-svelte/icons/ellipsis-vertical';
 	import LogOut from 'lucide-svelte/icons/log-out';
 
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';

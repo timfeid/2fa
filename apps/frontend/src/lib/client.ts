@@ -1,7 +1,5 @@
 import { FetchTransport, WebsocketTransport, createClient } from '@rspc/client';
-
 import type { Procedures } from '@2fa/rusty';
-// import { get } from 'svelte/store';
 import { PUBLIC_API_URL } from '$env/static/public';
 import { browser } from '$app/environment';
 import { get } from 'svelte/store';
