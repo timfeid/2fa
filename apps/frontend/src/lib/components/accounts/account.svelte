@@ -66,7 +66,10 @@
 				class="text-xl rounded h-10 w-10 bg-[var(--primary-color)] flex items-center justify-center"
 			>
 				<CircularProgress color="text-white/50" size={32} strokeWidth={2} {progress}>
-					{account.issuer.charAt(0)}
+					<div class="hidden group-hover:block text-xs">{ttl}</div>
+					<div class="block group-hover:hidden">
+						{account.issuer.charAt(0)}
+					</div>
 				</CircularProgress>
 			</div>
 		</div>
