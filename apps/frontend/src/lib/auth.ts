@@ -1,7 +1,7 @@
+import type { AuthResponse } from '@2fa/rusty';
 import { redirect } from '@sveltejs/kit';
 import { accessToken } from './stores/access-token';
-import { forTauri, getAccessTokenFromTauri, saveAccessTokenTauri } from './tauri';
-import type { AuthResponse } from '@2fa/rusty';
+import { isTauri, getAccessTokenWithTauri, saveRefreshTokenTauri } from './tauri';
 
 export function loginRequired({ accessToken }: { accessToken?: string }) {
 	if (!accessToken) {
@@ -10,22 +10,27 @@ export function loginRequired({ accessToken }: { accessToken?: string }) {
 }
 
 export async function refreshAccessToken() {
-	const response = await fetch('/refresh-token', { method: 'post' });
-	const token = await response.text();
+	const token = (await getAccessToken()) || undefined;
 	accessToken.set(token);
 
 	return token;
 }
 
 export async function getAccessToken() {
-	if (forTauri()) {
-		return getAccessTokenFromTauri();
+	if (isTauri) {
+		return getAccessTokenWithTauri();
 	}
+
+	const response = await fetch('/refresh-token', { method: 'post' });
+	const token = await response.text();
+
+	return token;
 }
 
 export async function saveLoginDetails(details: AuthResponse) {
-	if (forTauri() && details.refresh_token) {
-		return saveAccessTokenTauri(details.refresh_token);
+	accessToken.set(details.access_token || undefined);
+	if (isTauri && details.refresh_token) {
+		return saveRefreshTokenTauri(details.refresh_token);
 		// return console.log(await invoke('save_login', { refreshToken: details.refresh_token }));
 	}
 

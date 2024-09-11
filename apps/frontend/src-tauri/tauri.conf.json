@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "identifier": "com.timfeid.2fa",
   "build": {
-    "beforeDevCommand": "PUBLIC_FOR_TAURI=1 yarn dev",
+    "beforeDevCommand": "yarn dev",
     "devUrl": "http://localhost:1420",
     "beforeBuildCommand": "yarn build",
     "frontendDist": "../build"

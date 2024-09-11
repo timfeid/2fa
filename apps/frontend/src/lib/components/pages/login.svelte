@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
 	import {
 		Card,
 		CardContent,
@@ -9,10 +9,9 @@
 		CardHeader,
 		CardTitle
 	} from '$lib/components/ui/card';
-	import { client } from '../../client';
-	import type { AuthResponse } from '@2fa/rusty';
-	import { forTauri } from '../../tauri';
+	import { Input } from '$lib/components/ui/input';
 	import { saveLoginDetails } from '../../auth';
+	import { client } from '../../client';
 
 	let loading = false;
 	const args = {
@@ -20,7 +19,6 @@
 		password: ''
 	};
 	async function login() {
-		console.log('ehllo??');
 		loading = true;
 		try {
 			const response = await client.mutation(['authentication.login', args]);
@@ -31,7 +29,7 @@
 			console.log(e);
 		}
 		loading = false;
-		// window.location.href = '/';
+		goto('/accounts');
 	}
 </script>
 

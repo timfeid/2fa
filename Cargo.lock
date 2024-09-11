@@ -4442,6 +4442,7 @@ dependencies = [
  "axum",
  "bcrypt",
  "dotenv",
+ "futures",
  "jsonwebtoken",
  "rspc",
  "rspc-axum",

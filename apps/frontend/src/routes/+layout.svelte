@@ -4,11 +4,14 @@
 	import { getAccessToken } from '../lib/auth';
 	import { accessToken } from '../lib/stores/access-token';
 	import { goto } from '$app/navigation';
-	export let data;
+	import { Toaster } from '$lib/components/ui/sonner';
+
+	let loading = true;
 
 	onMount(async () => {
 		const at = await getAccessToken();
 		accessToken.set(at || undefined);
+		loading = false;
 
 		if (!at) {
 			return goto('/login');
@@ -28,4 +31,8 @@
 	/>
 </svelte:head>
 
-<slot />
+{#if !loading}
+	<slot />
+{/if}
+
+<Toaster />

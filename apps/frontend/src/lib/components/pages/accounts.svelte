@@ -1,14 +1,23 @@
 <script lang="ts">
-	import type { AccountDetails } from '@2fa/rusty';
 	import Fuse from 'fuse.js';
 	import { Card, CardHeader } from '../ui/card';
 	import SearchInput from '../ui/search-input/search-input.svelte';
 	import AccountDialog from '../accounts/account-dialog.svelte';
+	import { onMount } from 'svelte';
+	import { client } from '../../client';
+	import CardContent from '../ui/card/card-content.svelte';
+	import Account from '../accounts/account.svelte';
+	import type { AccountDetailsWithCode } from '@2fa/rusty';
+	import { Separator } from '../ui/separator';
 
-	let items: AccountDetails[] = [];
-	const fuse = new Fuse(items, { keys: ['issuer', 'username'] });
+	onMount(async () => {
+		items = await client.query(['account.list', { query: '' }]);
+	});
+
+	let items: AccountDetailsWithCode[] = [];
+	$: fuse = new Fuse(items, { keys: ['issuer', 'username'] });
 	let query = '';
-	let selectedItem: AccountDetails | undefined = undefined;
+	let selectedItem: AccountDetailsWithCode | undefined = undefined;
 
 	$: filteredItems = query
 		? fuse.search(query).map((i) => i.item)
@@ -22,7 +31,7 @@
 		openItem(filteredItems[0]);
 	}
 
-	function openItem(item: AccountDetails) {
+	function openItem(item: AccountDetailsWithCode) {
 		selectedItem = item;
 	}
 </script>
@@ -31,23 +40,14 @@
 	<AccountDialog bind:account={selectedItem} />
 {/if}
 
-<div class="space-y-4">
-	<form on:submit|preventDefault={openFirst}>
+<div class="space-y-3 py-3">
+	<form on:submit|preventDefault={openFirst} class="px-4">
 		<SearchInput bind:value={query}></SearchInput>
 		<button type="submit" class="hidden" />
 	</form>
-	<!-- <Separator class="h-[3px]" /> -->
-	<div class="shadow-md overflow-hidden grid grid-cols-1 gap-2">
-		{#each filteredItems as item}
-			<button on:click={() => openItem(item)}>
-				<Card
-					class="dark:bg-stone-900/10 dark:hover:bg-stone-900/25 dark:hover:text-white text-gray-300"
-				>
-					<CardHeader class="space-y-1 text-sm">
-						<div>{item.issuer}</div>
-					</CardHeader>
-				</Card>
-			</button>
+	<div class="">
+		{#each filteredItems as account}
+			<Account {account} />
 		{/each}
 	</div>
 </div>

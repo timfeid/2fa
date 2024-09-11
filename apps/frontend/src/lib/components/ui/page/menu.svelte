@@ -8,8 +8,8 @@
 
 <DropdownMenu.Root>
 	<DropdownMenu.Trigger asChild let:builder>
-		<Button builders={[builder]} variant="ghost" size="icon">
-			<Hamburger size={16} />
+		<Button builders={[builder]} variant="secondary" size="icon">
+			<Hamburger size={12} />
 		</Button>
 	</DropdownMenu.Trigger>
 	<DropdownMenu.Content align="end" class="w-56">

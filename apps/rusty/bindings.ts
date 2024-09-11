@@ -3,7 +3,7 @@
 export type Procedures = {
     queries: 
         { key: "account.find", input: string, result: AccountDetailsWithCode } | 
-        { key: "account.list", input: ListArgs, result: AccountDetails[] } | 
+        { key: "account.list", input: ListArgs, result: AccountDetailsWithCode[] } | 
         { key: "version", input: never, result: string },
     mutations: 
         { key: "authentication.login", input: LoginArgs, result: AuthResponse } | 
@@ -11,12 +11,10 @@ export type Procedures = {
     subscriptions: never
 };
 
-export type AccountDetails = { id: string; issuer: string; username: string }
+export type ListArgs<> = null
 
 export type AccountDetailsWithCode = { id: string; issuer: string; username: string; code: string; next_step: string; step: string }
 
 export type LoginArgs = { username: string; password: string }
 
 export type AuthResponse = { access_token: string | null; refresh_token: string | null; success: boolean }
-
-export type ListArgs<> = null

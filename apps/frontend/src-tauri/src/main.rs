@@ -13,7 +13,7 @@ use tauri_plugin_store::{with_store, StoreBuilder, StoreCollection};
 use tauri::{command, ipc::Channel, AppHandle, Runtime, Window};
 
 #[command]
-async fn set_access_token(
+async fn set_refresh_token(
     app: AppHandle<Wry>,
     token: String,
 ) -> Result<(), tauri_plugin_store::Error> {
@@ -37,7 +37,7 @@ async fn set_access_token(
 }
 
 #[command]
-async fn get_access_token(app: AppHandle<Wry>) -> Option<String> {
+async fn get_refresh_token(app: AppHandle<Wry>) -> Option<String> {
     let stores = app.try_state::<StoreCollection<Wry>>().expect("stores");
     let path = app
         .path()
@@ -101,7 +101,10 @@ fn main() {
 
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![get_access_token, set_access_token])
+        .invoke_handler(tauri::generate_handler![
+            get_refresh_token,
+            set_refresh_token
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

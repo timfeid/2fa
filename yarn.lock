@@ -54,6 +54,7 @@ __metadata:
     globals: "npm:^15.9.0"
     jose: "npm:^5.8.0"
     lucide-svelte: "npm:^0.439.0"
+    mode-watcher: "npm:^0.4.1"
     postcss: "npm:^8.4.45"
     prettier: "npm:^3.3.3"
     prettier-plugin-svelte: "npm:^3.2.6"
@@ -61,6 +62,7 @@ __metadata:
     svelte: "npm:^4.2.19"
     svelte-check: "npm:^3.8.6"
     svelte-radix: "npm:^1.1.1"
+    svelte-sonner: "npm:^0.3.27"
     tailwind-merge: "npm:^2.5.2"
     tailwind-variants: "npm:^0.2.1"
     tailwindcss: "npm:^3.4.10"
@@ -2843,6 +2845,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mode-watcher@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "mode-watcher@npm:0.4.1"
+  peerDependencies:
+    svelte: ^4.0.0 || ^5.0.0-next.1
+  checksum: 10c0/977afd53132fc4755e7e1ee39bbcd2f8636a303e010d5a93694a03703e0d57f683c38a6a939b9c110872954645e5d12935dd0b5fe87e8e45821f7d722206da7c
+  languageName: node
+  linkType: hard
+
 "mri@npm:^1.1.0":
   version: 1.2.0
   resolution: "mri@npm:1.2.0"
@@ -4029,6 +4040,15 @@ __metadata:
   peerDependencies:
     svelte: ^3.54.0 || ^4.0.0 || ^5.0.0 || ^5.0.0-next.1
   checksum: 10c0/332e49ef1a629442afa37f0cadf9abbd9100483a707a999955ba9cb83706ff78dfa85b836b8403a290df0cb340f073bd946b423ac30a26972c8b524917911509
+  languageName: node
+  linkType: hard
+
+"svelte-sonner@npm:^0.3.27":
+  version: 0.3.27
+  resolution: "svelte-sonner@npm:0.3.27"
+  peerDependencies:
+    svelte: ^3.0.0 || ^4.0.0 || ^5.0.0-next.1
+  checksum: 10c0/9e131426e2968524178a700cf1c09dea3ca81c7dfa1db7ca002c40dc716201ec56ed35c99fbc8ab4b9d096b545f2101b7cc3f048650edbdc2e48b9713f67f07b
   languageName: node
   linkType: hard
 

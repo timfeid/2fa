@@ -1,4 +1,5 @@
 use bcrypt::verify;
+use futures::future::try_join_all;
 use sqlx::{Pool, Postgres};
 
 use rspc::{Router, RouterBuilder};
@@ -20,14 +21,16 @@ pub struct ListArgs {}
 
 pub struct AccountController {}
 impl AccountController {
-    pub async fn list(ctx: Ctx, args: ListArgs) -> AppResult<Vec<AccountDetails>> {
+    pub async fn list(ctx: Ctx, args: ListArgs) -> AppResult<Vec<AccountDetailsWithCode>> {
         let user = ctx.required_user()?;
         let accounts = Account::list_for_user(&ctx.pool, &user.sub).await?;
-
-        Ok(accounts
+        let account_futures = accounts
             .iter()
-            .map(|account| account.into_response())
-            .collect())
+            .map(|account| async move { account.into_response_with_code().await });
+
+        let account_details_with_codes = try_join_all(account_futures).await?;
+
+        Ok(account_details_with_codes)
     }
 
     pub async fn find(ctx: Ctx, id: String) -> AppResult<AccountDetailsWithCode> {
