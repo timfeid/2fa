@@ -10,10 +10,12 @@
 
 	import { getColor } from '../../colors';
 	import { copyToClipboard } from '../../utils';
+	import AccountAvatar from './account-avatar.svelte';
 
 	export let account: AccountDetailsWithCode;
 
 	let accountWithCode: AccountDetailsWithCode = account;
+	$: accountWithCode = account;
 	let timeout: NodeJS.Timeout;
 	let progress = 0;
 	let ttl = 0;
@@ -39,7 +41,7 @@
 
 	function updateTtn() {
 		clearTimeout(timeout);
-		if (accountWithCode) {
+		if (accountWithCode && accountWithCode.id) {
 			ttn(accountWithCode);
 		}
 		timeout = setTimeout(updateTtn, 1000);
@@ -54,24 +56,33 @@
 			await refresh(account);
 		}
 	}
+	export let preview = false;
 </script>
 
 <div
-	class=" relative group py-2 px-4 rounded overflow-hidden text-sm hover:bg-stone-900/50"
+	class=" relative px-4 group rounded overflow-hidden text-sm hover:bg-stone-900/50"
+	class:bg-stone-900={preview}
+	class:py-2={!preview}
+	class:py-4={preview}
+	class:preview
 	style="--secondary-color: rgba({secondaryColor.r}, {secondaryColor.g}, {secondaryColor.b}, 20); --primary-color: rgba({color.r}, {color.g}, {color.b}, 20);"
 >
 	<div class="flex items-center">
 		<div class="flex flex-col justify-center items-end space-y-2 font-mono">
-			<div
-				class="text-xl rounded h-10 w-10 bg-[var(--primary-color)] flex items-center justify-center"
-			>
-				<CircularProgress color="text-white/50" size={32} strokeWidth={2} {progress}>
-					<div class="hidden group-hover:block text-xs">{ttl}</div>
+			<AccountAvatar {account}>
+				{#if !preview}
+					<CircularProgress color="text-white/50" size={32} strokeWidth={2} {progress}>
+						<div class="hidden group-hover:block text-xs">{ttl}</div>
+						<div class="block group-hover:hidden">
+							{account.issuer.charAt(0)}
+						</div>
+					</CircularProgress>
+				{:else}
 					<div class="block group-hover:hidden">
 						{account.issuer.charAt(0)}
 					</div>
-				</CircularProgress>
-			</div>
+				{/if}
+			</AccountAvatar>
 		</div>
 		<div class="flex-grow ml-3">
 			<div>
@@ -109,5 +120,8 @@
 		filter: brightness(3) grayscale(0.8);
 		-webkit-background-clip: text;
 		color: transparent;
+	}
+	.preview {
+		pointer-events: none;
 	}
 </style>

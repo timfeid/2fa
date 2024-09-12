@@ -1,14 +1,12 @@
 <script lang="ts">
+	import type { AccountDetailsWithCode } from '@2fa/rusty';
 	import Fuse from 'fuse.js';
-	import { Card, CardHeader } from '../ui/card';
-	import SearchInput from '../ui/search-input/search-input.svelte';
-	import AccountDialog from '../accounts/account-dialog.svelte';
 	import { onMount } from 'svelte';
 	import { client } from '../../client';
-	import CardContent from '../ui/card/card-content.svelte';
+	import AccountDialog from '../accounts/account-dialog.svelte';
 	import Account from '../accounts/account.svelte';
-	import type { AccountDetailsWithCode } from '@2fa/rusty';
-	import { Separator } from '../ui/separator';
+	import SearchInput from '../ui/search-input/search-input.svelte';
+	import CreateAccount from '../create-account/create-account.svelte';
 
 	onMount(async () => {
 		items = await client.query(['account.list', { query: '' }]);
@@ -34,6 +32,10 @@
 	function openItem(item: AccountDetailsWithCode) {
 		selectedItem = item;
 	}
+
+	function addItem(item: AccountDetailsWithCode) {
+		items = [...items, item];
+	}
 </script>
 
 {#if selectedItem}
@@ -51,3 +53,5 @@
 		{/each}
 	</div>
 </div>
+
+<CreateAccount on:create={(e) => addItem(e.detail)}></CreateAccount>

@@ -110,3 +110,22 @@ async fn main() {
     // println!("{}", token);
     // write("test.png", totp.get_qr_png().expect("unable to create png")).expect("Unable to write");
 }
+
+#[test]
+fn tst() {
+    let totp_real = TOTP::from_url("otpauth://totp/DigitalOcean:admin@timfeid.com?algorithm=SHA1&digits=6&issuer=DigitalOcean&period=30&secret=KEMMHM7H4IFX6FMY2Y7X4SUPAI3S56XV".to_string()).unwrap();
+    println!("{}", totp_real.generate_current().unwrap());
+    let secret = Secret::Encoded("KEMMHM7H4IFX6FMY2Y7X4SUPAI3S56XV".to_string());
+    let totp = TOTP::new(
+        Algorithm::SHA1,
+        6,
+        1,
+        30,
+        secret.to_bytes().unwrap(),
+        Some("test".to_string()),
+        "dazed".to_string(),
+    )
+    .unwrap();
+    let token = totp.generate_current().unwrap();
+    println!("{}", token);
+}

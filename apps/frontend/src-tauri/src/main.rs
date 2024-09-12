@@ -4,13 +4,37 @@
 use std::{
     fs::{self, File},
     io::Write,
+    path::{Path, PathBuf},
+    thread,
+    time::Duration,
 };
 
-use serde_json::json;
-use tauri::{Manager, Wry};
+use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
+use tauri::{
+    command, AppHandle, Emitter, Manager, PhysicalPosition, PhysicalSize, WebviewUrl,
+    WebviewWindowBuilder, Wry,
+};
 use tauri_plugin_store::{with_store, StoreBuilder, StoreCollection};
 
-use tauri::{command, ipc::Channel, AppHandle, Runtime, Window};
+use bardecoder;
+use image::{imageops::crop, DynamicImage, ImageBuffer, Rgba, RgbaImage};
+
+use std::error::Error;
+
+fn decode_qr_code(image_data: DynamicImage) -> Vec<String> {
+    let decoder = bardecoder::default_decoder();
+
+    let mut uris = vec![];
+    let results = decoder.decode(&image_data);
+    for result in results {
+        if let Ok(otp_uri) = result {
+            uris.push(otp_uri);
+        }
+    }
+
+    uris
+}
 
 #[command]
 async fn set_refresh_token(
@@ -37,7 +61,7 @@ async fn set_refresh_token(
 }
 
 #[command]
-async fn get_refresh_token(app: AppHandle<Wry>) -> Option<String> {
+async fn get_refresh_token(app: AppHandle<Wry>) -> Option<Value> {
     let stores = app.try_state::<StoreCollection<Wry>>().expect("stores");
     let path = app
         .path()
@@ -48,13 +72,100 @@ async fn get_refresh_token(app: AppHandle<Wry>) -> Option<String> {
     with_store(app.clone(), stores, path, |store| {
         store
             .get("refresh_token")
-            .and_then(|s| s.as_str().map(|s| s.to_owned())) // Directly map to the owned String
             .ok_or_else(|| {
                 tauri_plugin_store::Error::Tauri(tauri::Error::AssetNotFound("test.".to_string()))
             })
-        // Convert to expected error type
+            .cloned()
     })
-    .ok() // Convert the result into `Option`
+    .ok()
+}
+
+#[derive(Serialize, Deserialize)]
+struct Details {
+    x: i32,
+    y: i32,
+    width: u32,
+    height: u32,
+}
+
+impl Details {
+    fn new(position: PhysicalPosition<i32>, size: PhysicalSize<u32>) -> Details {
+        Details {
+            x: position.x,
+            y: position.y,
+            width: size.width,
+            height: size.height,
+        }
+    }
+}
+
+#[tauri::command]
+fn prep_qr(app: AppHandle<Wry>) -> Result<Details, String> {
+    let window = app.get_webview_window("Third").expect("hmm");
+
+    let position = window
+        .outer_position()
+        .expect("unable to get position of window");
+    let size = window.outer_size().expect("unable to get size of window");
+    window
+        .set_position(PhysicalPosition::new(9000, 9000))
+        .expect("Unable to set window opacity");
+
+    return Ok(Details::new(position, size));
+}
+
+#[tauri::command]
+fn scan_qr(app: AppHandle<Wry>, details: Details) -> Vec<String> {
+    println!("capture?");
+
+    let window = app.get_webview_window("Third").expect("hmm");
+    let binding = xcap::Monitor::all().unwrap();
+    let monitor = binding.first().unwrap();
+    let image = monitor.capture_image().unwrap();
+    println!("Screenshot taken.");
+
+    // Convert image to a buffer
+    let mut buffer =
+        RgbaImage::from_raw(image.width() as u32, image.height() as u32, image.to_vec())
+            .expect("Failed to create image buffer");
+
+    let cropped_image = crop(
+        &mut buffer,
+        details.x as u32,
+        details.y as u32,
+        details.width,
+        details.height,
+    )
+    .to_image();
+
+    let results = decode_qr_code(cropped_image.into());
+    let original_position = PhysicalPosition::new(details.x.clone(), details.y.clone());
+
+    match results.len().eq(&0) {
+        true => window.set_position(original_position),
+        false => {
+            window.close().expect("close the window");
+            app.emit_to("tauri-app", "qr_results", &results)
+        }
+    }
+    .expect("something went wrong moving the window");
+
+    results
+}
+
+#[tauri::command]
+fn start_qr(app: AppHandle<Wry>) {
+    WebviewWindowBuilder::new(
+        &app,
+        "Third",
+        tauri::WebviewUrl::App(Path::new("qr-scan").to_path_buf()),
+    )
+    .always_on_top(true)
+    .transparent(true)
+    .shadow(false)
+    .title("Tauri - Third")
+    .build()
+    .unwrap();
 }
 
 fn main() {
@@ -76,35 +187,28 @@ fn main() {
                 file.write_all(b"{}")?;
             }
 
-            let stores = app
-                .handle()
-                .try_state::<StoreCollection<Wry>>()
-                .ok_or("Store not found")?;
-
-            with_store(app.handle().clone(), stores, path, |store| {
-                // Note that values must be serde_json::Value instances,
-                // otherwise, they will not be compatible with the JavaScript bindings.
-                store.insert("some-key".to_string(), json!({ "value": 5 }))?;
-
-                // Get a value from the store.
-                let value = store
-                    .get("some-key")
-                    .expect("Failed to get value from store");
-                println!("{}", value); // {"value":5}
-
-                // You can manually save the store after making changes.
-                // Otherwise, it will save upon graceful exit as described above.
-                store.save()?;
-
-                Ok(())
-            });
-
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             get_refresh_token,
-            set_refresh_token
+            set_refresh_token,
+            scan_qr,
+            prep_qr,
+            start_qr
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+}
+
+mod tests {
+    use std::path::Path;
+
+    use crate::decode_qr_code;
+
+    #[test]
+    fn test() {
+        let img = image::open(Path::new("../screenshot.png")).expect("wwww");
+
+        decode_qr_code(img);
+    }
 }

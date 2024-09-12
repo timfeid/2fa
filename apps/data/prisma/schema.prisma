@@ -40,6 +40,8 @@ enum HashingAlgorithm {
   SHA1
   SHA256
   SHA512
+
+  @@map("hashing_algorithm")
 }
 
 model Account {

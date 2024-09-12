@@ -1,24 +1,24 @@
 <script lang="ts">
+	import { Toaster } from '$lib/components/ui/sonner';
 	import { onMount } from 'svelte';
 	import '../app.scss';
 	import { getAccessToken } from '../lib/auth';
 	import { accessToken } from '../lib/stores/access-token';
-	import { goto } from '$app/navigation';
-	import { Toaster } from '$lib/components/ui/sonner';
+	import { createTauriListeners } from '../lib/tauri';
 
 	let loading = true;
 
 	onMount(async () => {
-		const at = await getAccessToken();
-		accessToken.set(at || undefined);
-		loading = false;
-
-		if (!at) {
-			return goto('/login');
+		try {
+			const at = await getAccessToken();
+			accessToken.set(at || undefined);
+		} catch (e) {
+			console.log(e);
 		}
-
-		return goto('/accounts');
+		loading = false;
 	});
+
+	onMount(createTauriListeners);
 </script>
 
 <svelte:head>

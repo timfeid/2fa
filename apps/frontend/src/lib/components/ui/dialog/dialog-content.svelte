@@ -5,11 +5,12 @@
 	import { cn, flyAndScale } from '$lib/utils.js';
 	import { Button } from '../button/index.js';
 
-	type $$Props = DialogPrimitive.ContentProps & { open: boolean };
+	type $$Props = DialogPrimitive.ContentProps & { open?: boolean; noClose?: boolean };
 
 	let className: $$Props['class'] = undefined;
 	export let open: $$Props['open'] = true;
 	export let transition: $$Props['transition'] = flyAndScale;
+	export let showClose: $$Props['noClose'] = false;
 	export let transitionConfig: $$Props['transitionConfig'] = {
 		duration: 200
 	};
@@ -29,15 +30,17 @@
 	>
 		<slot />
 
-		<Button
-			on:click={() => (open = false)}
-			variant="ghost"
-			size="icon"
-			class="absolute top-5 right-4"
-		>
-			<Cross2 class="h-4 w-4" />
-		</Button>
-		<span class="sr-only">Close</span>
+		{#if showClose}
+			<Button
+				on:click={() => (open = false)}
+				variant="ghost"
+				size="icon"
+				class="absolute top-3 right-4"
+			>
+				<Cross2 class="h-4 w-4" />
+			</Button>
+			<span class="sr-only">Close</span>
+		{/if}
 		<!-- </DialogPrimitive.Close> -->
 	</DialogPrimitive.Content>
 </Dialog.Portal>
