@@ -11,7 +11,7 @@
 	}
 
 	function noResults() {
-		toast.error('Unable to find a valid OTP QR');
+		toast.error('Unable to find a valid OTP QR', { position: 'top-center' });
 	}
 
 	function processResults(input: string[]) {

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { AccountDetails } from '@2fa/rusty';
+	import type { AccountDetailsWithCode } from '@2fa/rusty';
 	import { getColor } from '../../colors';
 
-	export let account: AccountDetails;
+	export let account: AccountDetailsWithCode;
 
 	$: color = getColor(account.issuer);
 	$: secondaryColor = getColor(account.username || account.issuer);
@@ -10,7 +10,7 @@
 
 <div
 	style="--secondary-color: rgba({secondaryColor.r}, {secondaryColor.g}, {secondaryColor.b}, 20); --primary-color: rgba({color.r}, {color.g}, {color.b}, 20);"
-	class="text-xl rounded h-10 w-10 bg-[var(--primary-color)] flex items-center justify-center"
+	class="xs:text-xl rounded h-8 xs:h-12 w-8 xs:w-12 bg-[var(--primary-color)] flex items-center justify-center text-white"
 >
 	<slot>
 		<div>

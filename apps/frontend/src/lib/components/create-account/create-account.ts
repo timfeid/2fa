@@ -9,10 +9,15 @@ export const formSchema = z.object({
 });
 
 export const createAccountList = writable<CreateAccountArgs[]>([]);
+export const showCreateAccountModal = writable(false);
 
 export function createAccount(account: CreateAccountArgs) {
 	createAccountList.update((accounts) => {
 		accounts.push(account);
 		return accounts;
 	});
+}
+
+export function addAccount() {
+	showCreateAccountModal.set(true);
 }

@@ -5,10 +5,13 @@
 	import { getAccessToken } from '../lib/auth';
 	import { accessToken } from '../lib/stores/access-token';
 	import { createTauriListeners } from '../lib/tauri';
+	import AddAccountDialog from '../lib/components/accounts/add-account-dialog.svelte';
+	import { setTheme } from '../lib/stores/theme';
 
 	let loading = true;
 
 	onMount(async () => {
+		setTheme(localStorage.theme);
 		try {
 			const at = await getAccessToken();
 			accessToken.set(at || undefined);
@@ -36,3 +39,4 @@
 {/if}
 
 <Toaster />
+<AddAccountDialog />

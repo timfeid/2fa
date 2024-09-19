@@ -7,6 +7,7 @@
 	import Account from '../accounts/account.svelte';
 	import SearchInput from '../ui/search-input/search-input.svelte';
 	import CreateAccount from '../create-account/create-account.svelte';
+	import AddAccountDialog from '../accounts/add-account-dialog.svelte';
 
 	onMount(async () => {
 		items = await client.query(['account.list', { query: '' }]);
@@ -54,4 +55,4 @@
 	</div>
 </div>
 
-<CreateAccount on:create={(e) => addItem(e.detail)}></CreateAccount>
+<AddAccountDialog on:create={(e) => addItem(e.detail)}></AddAccountDialog>

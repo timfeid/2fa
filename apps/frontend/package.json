@@ -41,6 +41,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@internationalized/date": "^3.5.5",
 		"bits-ui": "^0.21.13",
 		"class-variance-authority": "^0.7.0",
 		"clsx": "^2.1.1",

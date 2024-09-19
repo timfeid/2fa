@@ -60,64 +60,68 @@
 </script>
 
 <div
-	class=" relative px-4 group rounded overflow-hidden text-sm hover:bg-stone-900/50"
+	class=" relative py-1 border-b dark:border-b-0 xs:py-2 px-4 group rounded overflow-hidden text-sm hover:bg-stone-100 dark:hover:bg-stone-900/50 flex items-center w-full max-w-full"
 	class:bg-stone-900={preview}
-	class:py-2={!preview}
-	class:py-4={preview}
+	class:!py-4={preview}
 	class:preview
 	style="--secondary-color: rgba({secondaryColor.r}, {secondaryColor.g}, {secondaryColor.b}, 20); --primary-color: rgba({color.r}, {color.g}, {color.b}, 20);"
 >
-	<div class="flex items-center">
-		<div class="flex flex-col justify-center items-end space-y-2 font-mono">
-			<AccountAvatar {account}>
-				{#if !preview}
-					<CircularProgress color="text-white/50" size={32} strokeWidth={2} {progress}>
+	<div class=" flex-shrink-0">
+		<AccountAvatar {account}>
+			{#if !preview}
+				<div class="p-1 w-full h-full">
+					<CircularProgress color="text-white/50" strokeWidth={3} {progress}>
 						<div class="hidden group-hover:block text-xs">{ttl}</div>
 						<div class="block group-hover:hidden">
 							{account.issuer.charAt(0)}
 						</div>
 					</CircularProgress>
-				{:else}
-					<div class="block group-hover:hidden">
-						{account.issuer.charAt(0)}
-					</div>
-				{/if}
-			</AccountAvatar>
-		</div>
-		<div class="flex-grow ml-3">
-			<div>
-				{account.issuer}
-			</div>
-			{#if account.username}
-				<div class="text-muted">{account.username}</div>
-			{/if}
-		</div>
-		<div class="flex items-center">
-			<Button
-				class="pr-0 pl-8 relative group group-hover:scale-90 transition duration-300"
-				variant="ghost"
-				on:click={copy}
-			>
-				<Link class="hidden group-hover:block absolute left-3" size="12" />
-
-				<div class="code rounded text-xl font-mono tracking-[.5rem]">
-					{accountWithCode.code}
 				</div>
-			</Button>
-			<div class="w-6">
-				<Button class="h-8 hidden group-hover:flex px-2 py-0" variant="ghost">
-					<Edit size="12" />
-				</Button>
-			</div>
-		</div>
+			{:else}
+				<div class="block group-hover:hidden">
+					{account.issuer.charAt(0)}
+				</div>
+			{/if}
+		</AccountAvatar>
 	</div>
+	<div class="ml-2 xs:ml-3 whitespace-nowrap min-w-0 text-xs xs:text-base">
+		<div class="overflow-ellipsis overflow-hidden">
+			{account.issuer}
+		</div>
+		{#if account.username}
+			<div class="text-muted overflow-ellipsis overflow-hidden font-thin">{account.username}</div>
+		{/if}
+	</div>
+	<Button
+		class="ml-auto pr-0 pl-8 relative group group-hover:scale-90 transition duration-300 flex-shrink-0"
+		variant="ghost"
+		on:click={copy}
+	>
+		<Link class="hidden group-hover:block absolute left-3" size="12" />
+
+		<div class="code rounded xs:text-xl font-mono tracking-[.5rem]">
+			{accountWithCode.code}
+		</div>
+	</Button>
+	{#if !preview}
+		<div class="w-6 flex-shrink-0">
+			<Button class="h-8 hidden group-hover:flex px-2 py-0" variant="ghost">
+				<Edit size="12" />
+			</Button>
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
+	:global(.dark) {
+		.code {
+			filter: brightness(3) grayscale(0.8);
+		}
+	}
 	.code {
 		background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
 		background-clip: text;
-		filter: brightness(3) grayscale(0.8);
+		filter: brightness(-3) grayscale(0.8);
 		-webkit-background-clip: text;
 		color: transparent;
 	}

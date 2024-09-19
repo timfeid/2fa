@@ -32,6 +32,7 @@ __metadata:
   resolution: "@2fa/frontend@workspace:apps/frontend"
   dependencies:
     "@2fa/rusty": "workspace:^"
+    "@internationalized/date": "npm:^3.5.5"
     "@rspc/client": "npm:^0.2.4"
     "@rspc/svelte-query": "npm:^0.2.4"
     "@sveltejs/adapter-auto": "npm:^3.0.0"
@@ -613,7 +614,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@internationalized/date@npm:^3.5.0, @internationalized/date@npm:^3.5.1":
+"@internationalized/date@npm:^3.5.0, @internationalized/date@npm:^3.5.1, @internationalized/date@npm:^3.5.5":
   version: 3.5.5
   resolution: "@internationalized/date@npm:3.5.5"
   dependencies:

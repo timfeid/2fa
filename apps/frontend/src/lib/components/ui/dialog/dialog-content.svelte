@@ -10,7 +10,7 @@
 	let className: $$Props['class'] = undefined;
 	export let open: $$Props['open'] = true;
 	export let transition: $$Props['transition'] = flyAndScale;
-	export let showClose: $$Props['noClose'] = false;
+	export let noClose: $$Props['noClose'] = false;
 	export let transitionConfig: $$Props['transitionConfig'] = {
 		duration: 200
 	};
@@ -23,14 +23,14 @@
 		{transition}
 		{transitionConfig}
 		class={cn(
-			'bg-background fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border p-5 shadow-lg sm:rounded-lg md:w-full',
+			'bg-background fixed left-[50%] top-[50%] z-50 grid w-full translate-x-[-50%] translate-y-[-50%] gap-4 border p-5 shadow-lg xs:rounded-lg md:w-full w-full sm:max-w-lg h-screen sm:h-auto',
 			className
 		)}
 		{...$$restProps}
 	>
 		<slot />
 
-		{#if showClose}
+		{#if !noClose}
 			<Button
 				on:click={() => (open = false)}
 				variant="ghost"
