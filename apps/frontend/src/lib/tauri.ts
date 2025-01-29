@@ -17,10 +17,14 @@ export async function saveRefreshTokenTauri(token: string) {
 }
 
 export async function getAccessTokenWithTauri() {
-	const refreshToken = await getRefreshTokenFromTauri();
-	if (refreshToken) {
-		const response = await client.mutation(['authentication.refresh_token', refreshToken]);
-		return response.access_token;
+	try {
+		const refreshToken = await getRefreshTokenFromTauri();
+		if (refreshToken) {
+			const response = await client.mutation(['authentication.refresh_token', refreshToken]);
+			return response.access_token;
+		}
+	} catch (e) {
+		console.error(e);
 	}
 }
 

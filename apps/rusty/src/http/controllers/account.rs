@@ -18,7 +18,7 @@ use totp_rs::{Algorithm, Secret, TOTP};
 #[derive(Deserialize, Type)]
 pub struct ListAccountArgs {}
 
-#[derive(Serialize, Deserialize, Type)]
+#[derive(Serialize, Deserialize, Type, Debug)]
 pub struct CreateAccountArgs {
     url: String,
     issuer: String,

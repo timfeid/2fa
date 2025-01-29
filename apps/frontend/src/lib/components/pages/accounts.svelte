@@ -10,7 +10,11 @@
 	import AddAccountDialog from '../accounts/add-account-dialog.svelte';
 
 	onMount(async () => {
-		items = await client.query(['account.list', { query: '' }]);
+		try {
+			items = await client.query(['account.list', { query: '' }]);
+		} catch (e) {
+			console.error(e);
+		}
 	});
 
 	let items: AccountDetailsWithCode[] = [];

@@ -24,12 +24,12 @@
 			const response = await client.mutation(['authentication.login', args]);
 			if (response.success && response.access_token && response.refresh_token) {
 				await saveLoginDetails(response);
+				goto('/accounts');
 			}
 		} catch (e) {
 			console.log(e);
 		}
 		loading = false;
-		goto('/accounts');
 	}
 </script>
 
